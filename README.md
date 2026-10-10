@@ -25,7 +25,7 @@ S3 Buckets  (opti-advisr-app-data-*, opti-advisr-agent-data-*)
 | Layer | Technology |
 |-------|-----------|
 | Frontend | React 19, Vite 6, Recharts, Lucide Icons, Sonner |
-| Hosting | Cloudflare Pages |
+| Hosting | Cloudflare Pages / Workers |
 | API | AWS API Gateway (REST, API Key auth) |
 | Compute | AWS Lambda (Python 3.12) |
 | Data | AWS Cost Explorer, EC2, RDS, S3 |
@@ -116,12 +116,12 @@ Open [http://localhost:5173](http://localhost:5173).
 
 The Vite dev server proxies `/api` requests to your API Gateway, injecting the API key automatically.
 
-### 5. Deploy Frontend to Cloudflare Pages
+### 5. Deploy Frontend to Cloudflare
 
 ```bash
 cd frontend
 npm run build
-npx wrangler pages deploy dist --project-name=opti-advisr
+npx wrangler deploy
 ```
 
 ---
@@ -132,39 +132,43 @@ npx wrangler pages deploy dist --project-name=opti-advisr
 Opti-Advisr/
 ├── backend/
 │   └── lambdas/
-│       ├── cost_retriever/        # Lambda: fetches AWS Cost Explorer data
+│       ├── cost_retriever/
 │       │   └── handler.py
-│       ├── resource_manager/      # Lambda: lists/manages EC2, RDS, S3
+│       ├── resource_manager/
 │       │   └── handler.py
-│       ├── ai_agent/              # Lambda: AI cost advisor (LangChain)
+│       ├── ai_agent/
 │       │   └── handler.py
-│       ├── cost_retriever.zip     # Packaged Lambda (git-ignored)
-│       ├── resource_manager.zip   # Packaged Lambda (git-ignored)
-│       └── ai_agent.zip           # Packaged Lambda (git-ignored)
+│       ├── cost_retriever.zip
+│       ├── resource_manager.zip
+│       └── ai_agent.zip
 ├── frontend/
 │   ├── src/
-│   │   ├── components/ui/         # Reusable UI primitives
-│   │   ├── lib/api.js             # API client (fetch wrapper)
-│   │   ├── pages/Home.jsx         # Main dashboard page
-│   │   ├── utils/demoData.js      # Demo/fallback data
-│   │   ├── styles/index.css       # Global styles
-│   │   ├── App.jsx                # Router
-│   │   └── main.jsx               # Entry point
-│   ├── .env.example               # Template for environment variables
+│   │   ├── components/ui/
+│   │   ├── lib/api.js
+│   │   ├── pages/Home.jsx
+│   │   ├── utils/demoData.js
+│   │   ├── styles/index.css
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── .env.example
 │   ├── index.html
 │   ├── package.json
-│   └── vite.config.js
+│   ├── vite.config.js
+│   └── wrangler.jsonc
 ├── infra/
-│   ├── main.tf                    # All Terraform resources
-│   ├── modules/                   # (reserved for future modules)
-│   └── cost_retriever.tf          # (placeholder)
-│   └── resource_manager.tf        # (placeholder)
-│   └── ai_agent.tf                # (placeholder)
-├── lambdas/                       # (legacy placeholder — use backend/)
-├── layers/                        # (reserved for Lambda layers)
+│   ├── main.tf
+│   ├── modules/
+│   ├── cost_retriever.tf
+│   ├── resource_manager.tf
+│   └── ai_agent.tf
+├── lambdas/
+├── layers/
+├── .github/
+│   ├── workflows/ci.yml
+│   └── pull_request_template.md
 ├── .gitignore
 ├── CONTRIBUTING.md
-├── LICENSE                        # MIT
+├── LICENSE
 └── README.md
 ```
 
@@ -221,14 +225,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for branch workflow, commit conventions, 
 
 ---
 
-## Team
-
-| Name | Role |
-|------|------|
-| Abhishek Kumar | Project Lead |
-
----
-
 ## License
 
-[MIT](LICENSE) © 2026 Abhishek Kumar
+[MIT](LICENSE)
